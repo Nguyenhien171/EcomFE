@@ -3,7 +3,11 @@ logs
 *.log
 npm-debug.log*
 yarn-debug.log*
+<<<<<<< HEAD
 yarn-error.log*x
+=======
+yarn-error.log*
+>>>>>>> a30328ccd57e754dcf90aa0af6076115b2ae333b
 pnpm-debug.log*
 lerna-debug.log*
 
