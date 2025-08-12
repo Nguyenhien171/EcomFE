@@ -9,6 +9,7 @@ const path = {
   transactions: '/transactions',
   settings: '/settings',
   profile: '/profile',
+  test: '/test',
   // Auth
   login: '/login',
   register: '/register',

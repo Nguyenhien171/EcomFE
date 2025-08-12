@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout'
 
 import Dashboard from '../pages/Dashboard'
 import Login from '../pages/login'
+import Test from '../pages/Test/Text'
 import Register from '../pages/register'
 import path from '../constants/path'
 import Products from '../pages/Products'
@@ -98,10 +99,10 @@ const router = createBrowserRouter([
       </MainLayout>
     )
   },
-  // {
-  //   path: '',
-  //   element: <MainLayout>{/* <StaffList /> */}</MainLayout>
-  // }
+  {
+    path: path.test,
+    element: <Test />
+  },
   {
     path: path.login,
     element: <Login />

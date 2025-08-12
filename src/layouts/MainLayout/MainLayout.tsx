@@ -10,9 +10,9 @@ export default function MainLayout({ children }: Props) {
   return (
     <div className=''>
       <Header />
-      <div className='grid min-h-screen grid-cols-4'>
+      <div className='grid min-h-screen grid-cols-[260px_1fr]'>
         <SideBar />
-        <main className='col-span-3 h-full py-4 px-3'>{children}</main>
+        <main className='col-span-1 h-full py-4 px-6'>{children}</main>
       </div>
     </div>
   )
