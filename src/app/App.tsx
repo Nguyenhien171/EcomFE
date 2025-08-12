@@ -2,12 +2,9 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 
-// // Import pages
 import Dashboard from '../pages/Dashboard'
-// import About from 'pages/About'
-// import StaffList from 'pages/StaffList'
-
-// Import path constants
+import Login from '../pages/login'
+import Register from '../pages/register'
 import path from '../constants/path'
 import Products from '../pages/Products'
 
@@ -37,11 +34,19 @@ const router = createBrowserRouter([
         <Products />
       </MainLayout>
     )
-  }
+  },
   // {
   //   path: '',
   //   element: <MainLayout>{/* <StaffList /> */}</MainLayout>
   // }
+  {
+    path: path.login,
+    element: <Login />
+  },
+  {
+    path: path.register,
+    element: <Register />
+  }
 ])
 
 function App() {
