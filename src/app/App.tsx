@@ -1,9 +1,15 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import MainLayout from './layouts/MainLayout'
-import Dashboard from './pages/Dashboard'
-import path from './constants/path'
-import Products from './pages/Products'
+import MainLayout from '../layouts/MainLayout'
+
+// // Import pages
+import Dashboard from '../pages/Dashboard'
+// import About from 'pages/About'
+// import StaffList from 'pages/StaffList'
+
+// Import path constants
+import path from '../constants/path'
+import Products from '../pages/Products'
 
 const router = createBrowserRouter([
   {
@@ -31,11 +37,11 @@ const router = createBrowserRouter([
         <Products />
       </MainLayout>
     )
-  },
-  {
-    path: '',
-    element: <MainLayout>{/* <StaffList /> */}</MainLayout>
   }
+  // {
+  //   path: '',
+  //   element: <MainLayout>{/* <StaffList /> */}</MainLayout>
+  // }
 ])
 
 function App() {
