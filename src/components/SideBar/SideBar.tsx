@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import path from '../../constants/path'
 import { RiAppsLine } from 'react-icons/ri'
 import { IoIosApps } from 'react-icons/io'
@@ -15,86 +14,149 @@ export default function SideBar() {
       <div className='h-full overflow-y-auto bg-gray-100 py-4 px-3 shadow-lg'>
         <ul className='space-y-2'>
           <li>
-            <Link
+            <NavLink
               to={path.dashboard}
-              className='flex items-center rounded-lg bg-gray-300 p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              end
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 700 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <RiAppsLine className='text-2xl' />
-              <span className='ml-3 font-bold'>Dashboard</span>
-            </Link>
+              <span className='ml-3'>Dashboard</span>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.products}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <IoIosApps className='text-2xl' />
               <span className='ml-3'>Products</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.orders}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <LuShoppingBag className='text-2xl' />
               <span className='ml-3'>Orders</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.statistics}
-              className='flex i
-              tems-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <FaRegChartBar className='text-2xl' />
               <span className='ml-3'>Statistics</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.reviews}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <FaRegStar className='text-2xl' />
               <span className='ml-3'>Reviews</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.customers}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <GrGroup className='text-2xl' />
               <span className='ml-3'>Customers</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.transactions}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <VscArrowSwap className='text-2xl' />
               <span className='ml-3'>Transactions</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.settings}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <IoSettingsOutline className='text-2xl' />
               <span className='ml-3'>Settings</span>
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to={path.profile}
-              className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+              style={({ isActive }) => ({
+                fontWeight: isActive ? 500 : undefined,
+                color: isActive ? '#2563eb' : undefined
+              })}
+              className={({ isActive }) => {
+                const activeClass = isActive ? 'bg-blue-200' : ''
+                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
+              }}
             >
               <FaRegUser className='text-2xl' />
               <span className='ml-3'>Profile</span>
-            </Link>
+            </NavLink>
           </li>
         </ul>
       </div>
