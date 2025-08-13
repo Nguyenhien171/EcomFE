@@ -1,0 +1,160 @@
+import type { Product } from '../@types/products.type'
+
+export const SAMPLE_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    title: 'OnePlus Nord N30 5G | Unlocked Dual-SIM Android Smart Phone | 6.7" LCD Display',
+    sku: 'HY5480',
+    stock: 25,
+    price: 253,
+    category: 'Electronics',
+    type: 'Goods',
+    tags: ['Top rated', 'Best', 'Popular', 'Phone'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 2,
+    title: 'Socket Mobile Charging Dock',
+    sku: 'E5480',
+    stock: 25,
+    price: 50.5,
+    category: 'Electronics',
+    type: 'Goods',
+    tags: ['Top rated', 'Popular'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 3,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 4,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 5,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 5,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 6,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 7,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 2,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 8,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 9,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 10,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 11,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 12,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  },
+  {
+    id: 13,
+    title: 'Mielle Organics Rosemary Mint Scalp & Hair Strengthening Oil',
+    sku: 'XZ25',
+    stock: 0,
+    price: 9.2,
+    category: 'Beauty',
+    type: 'Goods',
+    tags: ['Natural'],
+    rating: 4.2,
+    date: '03/12/2023'
+  }
+]
