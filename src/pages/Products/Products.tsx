@@ -2,8 +2,7 @@ import { TfiReload } from 'react-icons/tfi'
 import { FaSearch } from 'react-icons/fa'
 import { FaDownload } from 'react-icons/fa6'
 import React, { useState, useEffect } from 'react'
-import { BsArrowRightCircle } from 'react-icons/bs'
-import { BsArrowLeftCircle } from 'react-icons/bs'
+import { BsArrowRightCircle, BsArrowLeftCircle } from 'react-icons/bs'
 import { SAMPLE_PRODUCTS } from '../../data/products'
 import { updateProductSchema } from '../../schemas/productSchema'
 import type { z } from 'zod'
@@ -11,8 +10,18 @@ import ActionMenu from '../../components/ActionMenu'
 import ProductImage from '../../components/ProductImage'
 import AddNewProduct from '../../components/AddNewProduct'
 
-// Lấy type từ Zod schema
+// // Lấy type từ Zod schema
 type Product = z.infer<typeof updateProductSchema>
+
+// Dạng lưu trong localStorage
+type StoredProduct = Omit<Product, 'created_at' | 'updated_at' | 'image'> & {
+  created_at?: string
+  updated_at?: string
+  image?: string
+}
+
+// Helpers
+const KEY = 'products'
 
 const e: Intl.DateTimeFormatOptions = {
   month: 'long',
@@ -28,15 +37,65 @@ console.log(e)
 const fmtDate = (d?: Date) => (d ? d.toLocaleString('en-US', e) : '—')
 const fmtVND = (n?: number) => (typeof n === 'number' ? n.toLocaleString('vi-VN') + ' VND' : '—')
 
+//LocalStoge
+const parseJSON = <T,>(raw: string, fallback: T): T => {
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    return fallback
+  }
+}
+
+const toProduct = (p: StoredProduct | Product): Product => ({
+  ...p,
+  created_at: p.created_at ? new Date(p.created_at as unknown as string) : (p.created_at as Date | undefined),
+  updated_at: p.updated_at ? new Date(p.updated_at as unknown as string) : (p.updated_at as Date | undefined)
+})
+
+const loadLS = (): StoredProduct[] => {
+  const raw = localStorage.getItem(KEY)
+  return raw ? parseJSON<StoredProduct[]>(raw, []) : []
+}
+
+const saveLS = (list: Product[]) => {
+  const stored: StoredProduct[] = list.map((p) => ({
+    ...p,
+    created_at: p.created_at ? p.created_at.toISOString() : undefined,
+    updated_at: p.updated_at ? p.updated_at.toISOString() : undefined,
+    image: typeof p.image === 'string' ? p.image : undefined
+  }))
+  localStorage.setItem(KEY, JSON.stringify(stored))
+}
+
+//Sample + local lại(api thì sẽ bỏ cái sample đi tại nó thay thế cho api)
+const mergeProducts = (sample: Product[], ls: Product[]) => {
+  const map = new Map<number | string, Product>()
+  for (const p of sample) map.set(p.id as number | string, p)
+  for (const p of ls) map.set(p.id as number | string, p) // override sample nếu trùng id
+  const merged = Array.from(map.values())
+  merged.sort((a, b) => {
+    const ta = (a.updated_at ?? a.created_at)?.getTime?.() ?? 0
+    const tb = (b.updated_at ?? b.created_at)?.getTime?.() ?? 0
+    return tb - ta
+  })
+  return merged
+}
+
+//Apply
+const applyQuery = (arr: Product[], q: string) => {
+  const s = q.trim().toLowerCase()
+  return !s ? arr : arr.filter((p) => (p.name ?? '').toLowerCase().includes(s))
+}
+
 export default function Products() {
   const [query, setQuery] = useState('')
-  const parsedProducts: Product[] = SAMPLE_PRODUCTS.map((p) => ({
-    ...p,
-    created_at: p.created_at ? new Date(p.created_at) : undefined,
-    updated_at: p.updated_at ? new Date(p.updated_at) : undefined
-  }))
-  const [products] = useState<Product[]>(parsedProducts)
-  const [filtered, setFiltered] = useState<Product[]>(parsedProducts)
+  //   const parsedProducts: Product[] = SAMPLE_PRODUCTS.map((p) => ({
+  //     ...p,
+  //     created_at: p.created_at ? new Date(p.created_at) : undefined,
+  //     updated_at: p.updated_at ? new Date(p.updated_at) : undefined
+  //   }))
+  const [products, setProducts] = useState<Product[]>([])
+  const [filtered, setFiltered] = useState<Product[]>([])
   const [time, setTime] = useState(new Date())
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -47,28 +106,52 @@ export default function Products() {
     return () => clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    const sampleParsed: Product[] = SAMPLE_PRODUCTS.map((p) => ({
+      ...p,
+      created_at: p.created_at ? new Date(p.created_at) : undefined,
+      updated_at: p.updated_at ? new Date(p.updated_at) : undefined
+    }))
+    const stored = loadLS().map(toProduct)
+    const merged = mergeProducts(sampleParsed, stored)
+    setProducts(merged)
+    setFiltered(applyQuery(merged, ''))
+  }, [])
+
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
     const q = query.trim().toLowerCase()
     if (!q) return setFiltered(products)
 
     setFiltered(products.filter((p) => (p.name ?? '').toLowerCase().includes(q)))
+    setCurrentPage(1)
   }
 
   const clearFilters = () => {
     setQuery('')
     setFiltered(products)
+    setCurrentPage(1)
   }
 
-  // const StockBadge: React.FC<{ stock: number }> = ({ stock }) => {
-  //   if (stock <= 0) {
-  //     return <span className='text-red-600 font-medium'>Stock Out ({stock})</span>
-  //   }
-  //   if (stock < 10) {
-  //     return <span className='text-orange-600 font-medium'>Stock Low ({stock})</span>
-  //   }
-  //   return <span className='text-green-600 font-medium'>In Stock ({stock})</span>
-  // }
+  //   // const StockBadge: React.FC<{ stock: number }> = ({ stock }) => {
+  //   //   if (stock <= 0) {
+  //   //     return <span className='text-red-600 font-medium'>Stock Out ({stock})</span>
+  //   //   }
+  //   //   if (stock < 10) {
+  //   //     return <span className='text-orange-600 font-medium'>Stock Low ({stock})</span>
+  //   //   }
+  //   //   return <span className='text-green-600 font-medium'>In Stock ({stock})</span>
+  //   // }
+
+  // Lấy data thêm từ modal -> Local
+  const handleSaved = (saved: Product) => {
+    const next = [saved, ...products]
+    setProducts(next)
+    setFiltered(applyQuery(next, query))
+    saveLS(next)
+    setCurrentPage(1)
+  }
+
   const itemsPerPage = 10
 
   // tổng trang
@@ -99,7 +182,7 @@ export default function Products() {
       {/* Modal và Search */}
       <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6'>
         <div className='flex items-center gap-3'>
-          <AddNewProduct />
+          <AddNewProduct onSaved={handleSaved} />
           <button className='flex justify-center items-center border-blue-400 border px-4 py-2 rounded gap-2 text-blue-600 font-semibold'>
             Export CSV <FaDownload />
           </button>
@@ -203,7 +286,11 @@ export default function Products() {
                 <td className='px-6 py-4 text-gray-600'>{p.markup_rate}</td>
                 <td className='px-6 py-4 text-gray-600'>{p.warranty_period}</td>
                 <td className='px-6 py-4 text-gray-600'>
-                  <ProductImage image={p.image} alt={p.name ?? 'product'} className='w-16 h-16 object-cover rounded' />
+                  <ProductImage
+                    image={typeof p.image === 'string' ? p.image : undefined}
+                    alt={p.name ?? 'product'}
+                    className='w-16 h-16 object-cover rounded'
+                  />
                 </td>
                 <td className='px-6 py-4 text-gray-500'>
                   <div>{fmtDate(p.created_at)}</div>
@@ -232,7 +319,7 @@ export default function Products() {
           </button>
 
           {(() => {
-            const pageButtons = []
+            const pageButtons: React.ReactNode[] = []
             const startPage = Math.max(1, currentPage - 2)
             const endPage = Math.min(totalPages, currentPage + 2)
 

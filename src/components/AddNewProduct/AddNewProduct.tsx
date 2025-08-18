@@ -4,10 +4,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { updateProductSchema } from '../../schemas/productSchema'
 
-// Input type từ schema (trước khi parse)
+// Kiểu từ schema (trước khi parse)
+type Product = z.infer<typeof updateProductSchema>
 type UpdateProductFormInput = z.input<typeof updateProductSchema>
 
-export default function AddNewProduct() {
+// Dạng dữ liệu lưu trong localStorage (dates là string, image là string)
+type StoredProduct = Omit<Product, 'created_at' | 'updated_at' | 'image'> & {
+  created_at?: string
+  updated_at?: string
+  image?: string
+}
+
+type AddNewProductProps = { onSaved?: (p: Product) => void }
+
+export default function AddNewProduct({ onSaved }: AddNewProductProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   // Quản lý ảnh từ thiết bị + preview
@@ -43,10 +53,19 @@ export default function AddNewProduct() {
       reader.onerror = reject
       reader.readAsDataURL(file)
     })
+
+  // parse JSON an toàn, không dùng any
+  const parseJSON = <T,>(raw: string, fallback: T): T => {
+    try {
+      return JSON.parse(raw) as T
+    } catch {
+      return fallback
+    }
+  }
   const onSubmit: SubmitHandler<UpdateProductFormInput> = async (values) => {
     const parsed = updateProductSchema.parse(values)
     console.log('Product Data (parsed):', parsed)
-    console.log('Image file from device:', imageFile)
+    console.log('Image:', imageFile)
 
     let imageString = ''
     if (imageFile) {
@@ -55,23 +74,41 @@ export default function AddNewProduct() {
       imageString = parsed.image
     }
 
-    const record = {
+    const id = parsed.id ?? Date.now()
+    const createdISO = (parsed.created_at ?? new Date()).toISOString()
+    const updatedISO = new Date().toISOString()
+
+    // Bản ghi để LƯU localStorage (string dates)
+    const recordToStore: StoredProduct = {
       ...parsed,
-      id: parsed.id ?? Date.now(),
+      id,
       image: imageString,
-      created_at: (parsed.created_at ?? new Date()).toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: createdISO,
+      updated_at: updatedISO
     }
+
+    // Bản ghi để TRẢ lên UI (Date objects)
+    const recordForUI: Product = {
+      ...parsed,
+      id,
+      image: imageString,
+      created_at: new Date(createdISO),
+      updated_at: new Date(updatedISO)
+    }
+
+    // Lưu vào localStorage
     const KEY = 'products'
     const existingRaw = localStorage.getItem(KEY)
-    const list = existingRaw ? (JSON.parse(existingRaw) as object[]) : []
-    list.push(record)
+    const list = existingRaw ? parseJSON<StoredProduct[]>(existingRaw, []) : []
+    list.push(recordToStore)
     localStorage.setItem(KEY, JSON.stringify(list))
 
-    console.log('Saved:', record)
+    console.log('Save:', recordToStore)
+    onSaved?.(recordForUI)
 
     closeModal()
   }
+
   const closeModal = () => {
     if (imagePreview) URL.revokeObjectURL(imagePreview)
     setImagePreview(null)
