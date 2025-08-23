@@ -22,7 +22,7 @@ export default function Profile() {
   }
 
   return (
-    <div className='min-h-screen w-full bg-slate-50 p-6 text-slate-900'>
+    <div>
       <h1 className='text-3xl font-bold text-gray-800 mb-6'>Profile</h1>
 
       {/* Header Card (inline) */}
