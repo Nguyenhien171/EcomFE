@@ -14,7 +14,7 @@ export default function Settings() {
   }
 
   return (
-    <div className='min-h-screen w-full bg-slate-50 p-6 text-slate-900'>
+    <div>
       <h1 className='text-3xl font-bold text-gray-800 mb-6'>Settings</h1>
 
       <div className='grid gap-6 md:grid-cols-2'>
