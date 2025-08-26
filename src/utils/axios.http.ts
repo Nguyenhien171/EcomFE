@@ -212,6 +212,7 @@ export function decodeToken(token?: string | null) {
     );
 
     return JSON.parse(json);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     // fallback minimal
     try {
