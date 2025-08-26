@@ -1,12 +1,42 @@
-import React from 'react'
-import { FaSearch, FaRegCommentDots, FaUserCircle } from 'react-icons/fa'
+import React, { useState, useEffect } from 'react'
+import { FaSearch, FaRegCommentDots, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
 import { IoMdNotificationsOutline } from 'react-icons/io'
 import { BiLogoMagento } from 'react-icons/bi'
 import { FiFlag } from 'react-icons/fi'
 import { HiMenuAlt3 } from 'react-icons/hi'
 import { IoSunnyOutline } from 'react-icons/io5'
+import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import path from '../../constants/path'
 
 export default function Header() {
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate(path.login)
+  }
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('.user-menu-container')) {
+        setShowUserMenu(false)
+      }
+    }
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showUserMenu])
+
   return (
     <header className='flex items-center justify-between bg-white px-4 py-4 shadow'>
       {/* Left: Logo + Menu */}
@@ -39,9 +69,37 @@ export default function Header() {
           <IoMdNotificationsOutline className='text-2xl' />
           <span className='absolute -top-1 -right-0 bg-red-500 text-white text-xs rounded-full px-1'>5</span>
         </div>
-        <div className='relative'>
-          <FaUserCircle className='text-3xl text-gray-500' /> {/* Thay avatar bằng icon user */}
-          <span className='absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full border-2 border-white'></span>
+        <div className='relative user-menu-container'>
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className='flex items-center gap-2 text-gray-700 hover:text-gray-900'
+          >
+            <FaUserCircle className='text-3xl text-gray-500' />
+            <span className='absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full border-2 border-white'></span>
+          </button>
+          
+          {showUserMenu && (
+            <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border'>
+              <div className='px-4 py-2 text-sm text-gray-700 border-b'>
+                <div className='font-medium'>{user?.full_name || user?.username}</div>
+                <div className='text-gray-500'>{user?.email}</div>
+                <div className='text-xs text-blue-600 mt-1'>{user?.role}</div>
+              </div>
+              <button
+                onClick={() => navigate(path.profile)}
+                className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+              >
+                Profile
+              </button>
+              <button
+                onClick={handleLogout}
+                className='block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center gap-2'
+              >
+                <FaSignOutAlt />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

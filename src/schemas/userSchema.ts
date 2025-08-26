@@ -29,9 +29,13 @@ export const createUserSchema = z.object({
     .regex(/^\+?\d{7,15}$/, "Số điện thoại không hợp lệ")
     .max(20),
   role: 
-    z.enum(["Staff", "Manager", "Admin"]),
+    z.enum(["STAFF", "MANAGER", "ADMIN"]),
   status:
     z.enum(["active", "inactive"]).optional(),
 });
 
 export const updateUserSchema = createUserSchema.partial();
+
+// Type exports
+export type CreateUserFormData = z.infer<typeof createUserSchema>
+export type UpdateUserFormData = z.infer<typeof updateUserSchema>

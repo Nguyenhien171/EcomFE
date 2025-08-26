@@ -1,6 +1,9 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
+import { AuthProvider } from '../contexts/AuthContext'
+import ProtectedRoute from '../components/ProtectedRoute'
+import PublicRoute from '../components/PublicRoute'
 
 import Dashboard from '../pages/Dashboard'
 import Login from '../pages/login'
@@ -13,90 +16,119 @@ import Statistics from '../pages/Statistics'
 import Reviews from '../pages/Reviews'
 import Customer from '../pages/Customers'
 import Transaction from '../pages/Transactions'
+import Users from '../pages/Users'
 import Settings from '../pages/Settings'
 import Profile from '../pages/Profile'
 
 const router = createBrowserRouter([
   {
-    // Set chính cho web JSS
+    // Default to Login when entering site
     path: '',
     index: true,
     element: (
-      <MainLayout>
-        <Dashboard />
-      </MainLayout>
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
     )
   },
   {
     path: path.dashboard,
     element: (
-      <MainLayout>
-        <Dashboard />
-      </MainLayout>
+      <ProtectedRoute requiredRole="MANAGER">
+        <MainLayout>
+          <Dashboard />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/products',
     element: (
-      <MainLayout>
-        <Products />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Products />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/orders',
     element: (
-      <MainLayout>
-        <Orders />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Orders />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/statistics',
     element: (
-      <MainLayout>
-        <Statistics />
-      </MainLayout>
+      <ProtectedRoute requiredRole="MANAGER">
+        <MainLayout>
+          <Statistics />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/reviews',
     element: (
-      <MainLayout>
-        <Reviews />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Reviews />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/customers',
     element: (
-      <MainLayout>
-        <Customer />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Customer />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/transactions',
     element: (
-      <MainLayout>
-        <Transaction />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Transaction />
+        </MainLayout>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: '/users',
+    element: (
+      <ProtectedRoute requiredRole="MANAGER">
+        <MainLayout>
+          <Users />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/settings',
     element: (
-      <MainLayout>
-        <Settings />
-      </MainLayout>
+      <ProtectedRoute requiredRole="ADMIN">
+        <MainLayout>
+          <Settings />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
     path: '/profile',
     element: (
-      <MainLayout>
-        <Profile />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Profile />
+        </MainLayout>
+      </ProtectedRoute>
     )
   },
   {
@@ -105,16 +137,36 @@ const router = createBrowserRouter([
   },
   {
     path: path.login,
-    element: <Login />
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    )
   },
   {
     path: path.register,
-    element: <Register />
+    element: (
+      <PublicRoute>
+        <Register />
+      </PublicRoute>
+    )
+  },
+  {
+    path: '*',
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    )
   }
 ])
 
 function App() {
-  return <RouterProvider router={router} />
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }
 
 export default App

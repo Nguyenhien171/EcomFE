@@ -1,0 +1,114 @@
+services:
+  # mongo:
+  #   image: mongo:6
+  #   container_name: mongo
+  #   restart: always
+  #   ports:
+  #     - "27027:27017"
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: 123456
+  #     MONGO_INITDB_DATABASE: AuthService
+  #   volumes:
+  #     - mongo_data:/data/db
+  #   networks:
+  #     - microservice-network
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD",
+  #         "mongosh",
+  #         "--username",
+  #         "root",
+  #         "--password",
+  #         "123456",
+  #         "--eval",
+  #         "db.adminCommand('ping')",
+  #       ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports: ["5672:5672", "15672:15672"]
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks: [microservice-network]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # SEED: chạy đúng 1 lần, chờ mongo healthy rồi exit 0
+  seed:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: auth-seed
+    env_file:
+      - ./auth-service/.env.example
+    command: ["./seed"]
+    networks:
+      - microservice-network
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: auth-service
+    env_file:
+      - ./auth-service/.env.example
+    ports:
+      - "50001:50001"
+      - "8080:8080"
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    networks: [microservice-network]
+
+  kong:
+    image: kong:3.3.1
+    container_name: kong
+    restart: always
+    environment:
+      KONG_DATABASE: off
+      JWT_SECRET: ${JWT_SECRET}
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8004
+    ports:
+      - "8000:8000"
+      - "8004:8004"
+      - "8443:8443"
+      - "8444:8444"
+    volumes:
+      - ./api-gateway/kong.yml:/usr/local/kong/declarative/kong.yml:ro
+    networks: [microservice-network]
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
+  kong_data:
+
+networks:
+  microservice-network:
+    driver: bridge

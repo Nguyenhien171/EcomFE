@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "rpc.jss.com/gen/product";
+
+message User {
+    string dummy = 1;
+}

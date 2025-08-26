@@ -9,6 +9,7 @@ import type { z } from 'zod'
 import ActionMenu from '../../components/ActionMenu'
 import ProductImage from '../../components/ProductImage'
 import AddNewProduct from '../../components/AddNewProduct'
+import { useAuth } from '../../contexts/AuthContext'
 
 // // Lấy type từ Zod schema
 type Product = z.infer<typeof updateProductSchema>
@@ -88,6 +89,7 @@ const applyQuery = (arr: Product[], q: string) => {
 }
 
 export default function Products() {
+  const { hasPermission } = useAuth()
   const [query, setQuery] = useState('')
   //   const parsedProducts: Product[] = SAMPLE_PRODUCTS.map((p) => ({
   //     ...p,
@@ -182,7 +184,10 @@ export default function Products() {
       {/* Modal và Search */}
       <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6'>
         <div className='flex items-center gap-3'>
-          <AddNewProduct onSaved={handleSaved} />
+          {/* Only show Add New Product for ADMIN and MANAGER */}
+          {hasPermission('MANAGER') && (
+            <AddNewProduct onSaved={handleSaved} />
+          )}
           <button className='flex justify-center items-center border-blue-400 border px-4 py-2 rounded gap-2 text-blue-600 font-semibold'>
             Export CSV <FaDownload />
           </button>

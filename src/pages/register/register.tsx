@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import path from "../../constants/path";
 import { registerSchema, type RegisterFormData } from "../../schemas/authSchema";
+import http from "../../utils/axios.http";
 
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,9 +19,22 @@ const Register: React.FC = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
     console.log("Form data:", data);
+
+    const response = await http.post("/v1/auth/register", data);
+    console.log("Register response:", response.data);
+
     alert("Đăng ký thành công!");
+
+    // Optional: auto-login hoặc redirect sang /login
+    // navigate("/login");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.error(err);
+    alert(err?.response?.data?.message || "Đăng ký thất bại!");
+  }
   };
 
   return (
