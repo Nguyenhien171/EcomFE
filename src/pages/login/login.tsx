@@ -55,11 +55,8 @@ const Login: React.FC = () => {
         password: data.password
       });
       console.log(response)
-<<<<<<< Updated upstream
       console.log("Login response:", response.data);
 
-=======
->>>>>>> Stashed changes
       // Handle different response shapes from BE
       // const raw = response?.data ?? {};
       // const result = (raw as any).result ?? raw;

@@ -3,7 +3,6 @@ import path from '../../constants/path'
 import { RiAppsLine } from 'react-icons/ri'
 import { IoIosApps } from 'react-icons/io'
 import { LuShoppingBag } from 'react-icons/lu'
-<<<<<<< Updated upstream
 import { FaRegChartBar, FaRegStar, FaRegUser, FaUsers } from 'react-icons/fa'
 import { GrGroup } from 'react-icons/gr'
 import { VscArrowSwap } from 'react-icons/vsc'
@@ -13,19 +12,10 @@ import { useAuth } from '../../contexts/AuthContext'
 export default function SideBar() {
   const { user, hasPermission } = useAuth()
 
-=======
-import { FaRegChartBar, FaRegStar, FaRegUser } from 'react-icons/fa'
-import { GrGroup } from 'react-icons/gr'
-import { VscArrowSwap } from 'react-icons/vsc'
-import { IoSettingsOutline } from 'react-icons/io5'
-
-export default function SideBar() {
->>>>>>> Stashed changes
   return (
     <aside className='min-w-[70px] max-w-[260px] bg-gray-100' aria-label='Sidebar'>
       <div className='h-full overflow-y-auto bg-gray-100 py-4 px-3 shadow-lg'>
         <ul className='space-y-2'>
-<<<<<<< Updated upstream
           {/* Dashboard - Only for ADMIN and MANAGER */}
           {hasPermission('MANAGER') && (
             <li>
@@ -46,26 +36,6 @@ export default function SideBar() {
               </NavLink>
             </li>
           )}
-=======
-          {/*ẩn cái Dasboard đi nếu là staff */}
-          <li>
-            <NavLink
-              to={path.dashboard}
-              end
-              style={({ isActive }) => ({
-                fontWeight: isActive ? 700 : undefined,
-                color: isActive ? '#2563eb' : undefined
-              })}
-              className={({ isActive }) => {
-                const activeClass = isActive ? 'bg-blue-200' : ''
-                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
-              }}
-            >
-              <RiAppsLine className='text-2xl' />
-              <span className='ml-3'>Dashboard</span>
-            </NavLink>
-          </li>
->>>>>>> Stashed changes
           <li>
             <NavLink
               to={path.products}
@@ -98,7 +68,6 @@ export default function SideBar() {
               <span className='ml-3'>Orders</span>
             </NavLink>
           </li>
-<<<<<<< Updated upstream
           {/* Statistics - Only for ADMIN and MANAGER */}
           {hasPermission('MANAGER') && (
             <li>
@@ -118,24 +87,6 @@ export default function SideBar() {
               </NavLink>
             </li>
           )}
-=======
-          <li>
-            <NavLink
-              to={path.statistics}
-              style={({ isActive }) => ({
-                fontWeight: isActive ? 500 : undefined,
-                color: isActive ? '#2563eb' : undefined
-              })}
-              className={({ isActive }) => {
-                const activeClass = isActive ? 'bg-blue-200' : ''
-                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
-              }}
-            >
-              <FaRegChartBar className='text-2xl' />
-              <span className='ml-3'>Statistics</span>
-            </NavLink>
-          </li>
->>>>>>> Stashed changes
           <li>
             <NavLink
               to={path.reviews}
@@ -184,7 +135,6 @@ export default function SideBar() {
               <span className='ml-3'>Transactions</span>
             </NavLink>
           </li>
-<<<<<<< Updated upstream
           
           {/* Users - Only for ADMIN and MANAGER */}
           {hasPermission('MANAGER') && (
@@ -224,24 +174,6 @@ export default function SideBar() {
               </NavLink>
             </li>
           )}
-=======
-          <li>
-            <NavLink
-              to={path.settings}
-              style={({ isActive }) => ({
-                fontWeight: isActive ? 500 : undefined,
-                color: isActive ? '#2563eb' : undefined
-              })}
-              className={({ isActive }) => {
-                const activeClass = isActive ? 'bg-blue-200' : ''
-                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
-              }}
-            >
-              <IoSettingsOutline className='text-2xl' />
-              <span className='ml-3'>Settings</span>
-            </NavLink>
-          </li>
->>>>>>> Stashed changes
           <li>
             <NavLink
               to={path.profile}
