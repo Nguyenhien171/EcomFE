@@ -10,6 +10,7 @@ import { IoSettingsOutline } from 'react-icons/io5'
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function SideBar() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, hasPermission } = useAuth()
 
   return (
