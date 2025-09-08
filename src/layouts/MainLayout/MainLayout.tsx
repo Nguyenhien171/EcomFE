@@ -8,11 +8,13 @@ interface Props {
 
 export default function MainLayout({ children }: Props) {
   return (
-    <div className=''>
+    <div className='w-full'>
       <Header />
       <div className='grid min-h-screen grid-cols-[260px_1fr]'>
         <SideBar />
-        <main className='col-span-1 h-full py-4 px-6'>{children}</main>
+        <main className='col-span-1 min-w-0 h-full py-4 px-6'>
+          <div className='max-w-full overflow-x-auto break-words'>{children}</div>
+        </main>
       </div>
     </div>
   )
