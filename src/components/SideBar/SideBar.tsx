@@ -3,7 +3,7 @@ import path from '../../constants/path'
 import { RiAppsLine } from 'react-icons/ri'
 import { IoIosApps } from 'react-icons/io'
 import { LuShoppingBag } from 'react-icons/lu'
-import { FaRegChartBar, FaRegStar, FaRegUser, FaUsers } from 'react-icons/fa'
+import { FaRegChartBar, FaRegStar, FaRegUser } from 'react-icons/fa'
 import { GrGroup } from 'react-icons/gr'
 import { VscArrowSwap } from 'react-icons/vsc'
 import { IoSettingsOutline } from 'react-icons/io5'
@@ -106,22 +106,6 @@ export default function SideBar() {
           </li>
           <li>
             <NavLink
-              to={path.customers}
-              style={({ isActive }) => ({
-                fontWeight: isActive ? 500 : undefined,
-                color: isActive ? '#2563eb' : undefined
-              })}
-              className={({ isActive }) => {
-                const activeClass = isActive ? 'bg-blue-200' : ''
-                return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
-              }}
-            >
-              <GrGroup className='text-2xl' />
-              <span className='ml-3'>Customers</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to={path.transactions}
               style={({ isActive }) => ({
                 fontWeight: isActive ? 500 : undefined,
@@ -136,7 +120,7 @@ export default function SideBar() {
               <span className='ml-3'>Transactions</span>
             </NavLink>
           </li>
-          
+
           {/* Users - Only for ADMIN and MANAGER */}
           {hasPermission('MANAGER') && (
             <li>
@@ -151,13 +135,13 @@ export default function SideBar() {
                   return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-blue-200`
                 }}
               >
-                <FaUsers className='text-2xl' />
+                <GrGroup className='text-2xl' />
                 <span className='ml-3'>Users</span>
               </NavLink>
             </li>
           )}
           {/* Settings - Only for ADMIN */}
-          {hasPermission('ADMIN') && (
+          {hasPermission('MANAGER') && (
             <li>
               <NavLink
                 to={path.settings}

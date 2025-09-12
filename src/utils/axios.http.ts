@@ -66,8 +66,8 @@ class Http {
     this.callRefreshToken = null
 
     this.instance = axios.create({
-//       baseURL: API_BASE_URL,
-      baseURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8000',
+      baseURL: API_BASE_URL,
+      // baseURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8000',
       timeout: 20000,
       headers: { 'Content-Type': 'application/json' }
     })
@@ -125,7 +125,7 @@ class Http {
           clearLS()
           this.accessToken = ''
           this.refreshToken = ''
-          
+
           // Trigger logout event for AuthContext
           window.dispatchEvent(new CustomEvent('auth:logout'))
         }
@@ -182,7 +182,7 @@ class Http {
         clearLS()
         this.accessToken = ''
         this.refreshToken = ''
-        
+
         // Trigger logout event for AuthContext
         window.dispatchEvent(new CustomEvent('auth:logout'))
         throw err
@@ -195,33 +195,31 @@ const http = new Http().instance
 export default http
 
 export function decodeToken(token?: string | null) {
-  if (!token) return null;
+  if (!token) return null
   try {
-    const parts = token.split(".");
-    if (parts.length < 2) return null;
-    let payloadB64 = parts[1];
+    const parts = token.split('.')
+    if (parts.length < 2) return null
+    let payloadB64 = parts[1]
 
     // Fix padding nếu thiếu
-    const pad = payloadB64.length % 4;
-    if (pad) payloadB64 += "=".repeat(4 - pad);
+    const pad = payloadB64.length % 4
+    if (pad) payloadB64 += '='.repeat(4 - pad)
 
-    const binary = atob(payloadB64);
+    const binary = atob(payloadB64)
     const json = decodeURIComponent(
-      Array.prototype.map.call(binary, (c: string) =>
-        "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
-      ).join("")
-    );
+      Array.prototype.map.call(binary, (c: string) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    )
 
-    return JSON.parse(json);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return JSON.parse(json)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     // fallback minimal
     try {
-      const payload = token.split(".")[1];
-      return JSON.parse(atob(payload));
+      const payload = token.split('.')[1]
+      return JSON.parse(atob(payload))
     } catch (err) {
-      console.warn("decodeToken failed", err);
-      return null;
+      console.warn('decodeToken failed', err)
+      return null
     }
   }
 }

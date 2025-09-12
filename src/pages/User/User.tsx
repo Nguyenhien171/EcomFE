@@ -7,22 +7,11 @@ import http from '../../utils/axios.http'
 import CreateAccount from '../../components/CreateAccount'
 import { isAxiosError } from 'axios'
 
-export default function Customer() {
-  // Hardcode token
-  const ADMIN_TOKEN =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGE2OWNjNmM3YmQ1ZGJlYTA2Mzc1YmEiLCJkaWQiOiI2OGM0NmNiODM2NGRjNTU5NTdiMzkyMTIiLCJyb2xlIjoiQURNSU4iLCJpc3MiOiJhdXRoLXNlcnZpY2UiLCJhdWQiOlsianNzLWFwaSJdLCJleHAiOjE3NTc3MDQyNTMsIm5iZiI6MTc1NzcwMzMyMywiaWF0IjoxNzU3NzAzMzUzLCJqdGkiOiI2OGM0NmNiOTM2NGRjNTU5NTdiMzkyMTMifQ.8IpCb-3xVEyPU8IeEgB6Xm_nWyi37hxNOBAkWZc5c2Q'
-
+export default function User() {
   useEffect(() => {
-    http.defaults.headers.common.Authorization = `Bearer ${ADMIN_TOKEN}`
+    const token = localStorage.getItem('accessToken')
+    if (token) http.defaults.headers.common.Authorization = `Bearer ${token}`
   }, [])
-  console.log('token:', ADMIN_TOKEN)
-  //Sử dụng khi login
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token')
-  //   if (token) {
-  //     http.defaults.headers.common.Authorization = `Bearer ${token}`
-  //   }
-  // }, [])
 
   // Server-side paging
   const [rows, setRows] = useState<UserRow[]>([])
