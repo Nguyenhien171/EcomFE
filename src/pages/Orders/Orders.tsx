@@ -5,9 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createOrderSchema, type CreateOrderInput } from '../../schemas/orders'
 import { createOrderItemSchema } from '../../schemas/oder_item'
+
+// ===== Types =====
 export type OrderRow = z.infer<typeof createOrderSchema>
 export type OrderItemRow = z.infer<typeof createOrderItemSchema>
 
+// ===== Helpers =====
 const VND = (n: number) => n.toLocaleString('vi-VN') + ' VND'
 
 const genOrderNumber = () => {
@@ -21,7 +24,7 @@ const genOrderNumber = () => {
   return `ORD-${y}${m}${day}-${rand}`
 }
 
-// Lấy staff
+// Lấy staff info (id + email) từ token (JWT) trong localStorage
 function getStaffFromToken(): { id: number | null; email: string | null } {
   try {
     const token = localStorage.getItem('access_token') || localStorage.getItem('token')
@@ -48,6 +51,7 @@ function getStaffFromToken(): { id: number | null; email: string | null } {
   }
 }
 
+// ✅ Log thực tế (trước đây in ra function)
 console.log('Token parsed:', getStaffFromToken())
 
 // ===== Products from localStorage =====

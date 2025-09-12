@@ -4,12 +4,12 @@ import { CiEdit, CiSaveDown1 } from 'react-icons/ci'
 export default function Profile() {
   const [editing, setEditing] = useState(false)
   const [user, setUser] = useState({
-    firstName: 'Tài',
-    lastName: 'Đẹp Zai',
+    firstName: 'Manager',
+    lastName: '',
     dob: '12/1/2005',
     email: 'info@gmail.com',
     phone: '19001868',
-    role: 'Admin',
+    role: 'Manager',
     country: 'Việt Nam',
     city: 'Hồ Chí Minh',
     postal: '71000',

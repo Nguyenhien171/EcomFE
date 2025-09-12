@@ -14,9 +14,8 @@ import Products from '../pages/Products'
 import Orders from '../pages/Orders'
 import Statistics from '../pages/Statistics'
 import Reviews from '../pages/Reviews'
-import Customer from '../pages/Customers'
+import Users from '../pages/User'
 import Transaction from '../pages/Transactions'
-import Users from '../pages/Users'
 import Settings from '../pages/Settings'
 import Profile from '../pages/Profile'
 
@@ -34,7 +33,7 @@ const router = createBrowserRouter([
   {
     path: path.dashboard,
     element: (
-      <ProtectedRoute requiredRole="MANAGER">
+      <ProtectedRoute requiredRole='MANAGER'>
         <MainLayout>
           <Dashboard />
         </MainLayout>
@@ -64,7 +63,7 @@ const router = createBrowserRouter([
   {
     path: '/statistics',
     element: (
-      <ProtectedRoute requiredRole="MANAGER">
+      <ProtectedRoute requiredRole='MANAGER'>
         <MainLayout>
           <Statistics />
         </MainLayout>
@@ -82,16 +81,6 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: '/customers',
-    element: (
-      <ProtectedRoute>
-        <MainLayout>
-          <Customer />
-        </MainLayout>
-      </ProtectedRoute>
-    )
-  },
-  {
     path: '/transactions',
     element: (
       <ProtectedRoute>
@@ -104,7 +93,7 @@ const router = createBrowserRouter([
   {
     path: '/users',
     element: (
-      <ProtectedRoute requiredRole="MANAGER">
+      <ProtectedRoute requiredRole='MANAGER'>
         <MainLayout>
           <Users />
         </MainLayout>
@@ -114,7 +103,7 @@ const router = createBrowserRouter([
   {
     path: '/settings',
     element: (
-      <ProtectedRoute requiredRole="ADMIN">
+      <ProtectedRoute requiredRole='MANAGER'>
         <MainLayout>
           <Settings />
         </MainLayout>
