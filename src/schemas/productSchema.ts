@@ -22,10 +22,11 @@ const decimalBase = (precision: number, scale: number, minValue?: number) =>
     })
 
 // Bắt buộc
-const decimalRequired = (precision: number, scale: number, minValue?: number) => decimalBase(precision, scale, minValue)
+export const decimalRequired = (precision: number, scale: number, minValue?: number) =>
+  decimalBase(precision, scale, minValue)
 
 // Tuỳ chọn (được phép để trống)
-const decimalOptional = (precision: number, scale: number, minValue?: number) =>
+export const decimalOptional = (precision: number, scale: number, minValue?: number) =>
   decimalBase(precision, scale, minValue).optional()
 
 /** ---- Schemas ---- */
