@@ -27,7 +27,6 @@ export const createOrderSchema = z.object({
       .min(1)
       .max(20)
       .default("pending")
-
 })
 
 export const updateOrderSchema = createOrderSchema.partial();
