@@ -7,6 +7,7 @@ const path = {
   reviews: '/reviews',
   customers: '/customers',
   transactions: '/transactions',
+  users: '/users',
   settings: '/settings',
   profile: '/profile',
   test: '/test',

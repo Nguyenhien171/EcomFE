@@ -1,11 +1,23 @@
 import axios, { AxiosError, HttpStatusCode, type AxiosInstance, type AxiosResponse } from 'axios'
 
-const ACCESS_TOKEN_KEY = 'access_token'
-const REFRESH_TOKEN_KEY = 'refresh_token'
+const accessToken_KEY = 'accessToken'
+const refreshToken_KEY = 'refreshToken'
+
+const API_BASE_URL = import.meta.env.VITE_SERVER_URL as string | undefined
+const REFRESH_PATH = (import.meta.env.VITE_AUTH_REFRESH_PATH as string | undefined) || '/auth/refresh-token'
+const LOGIN_PATH = (import.meta.env.VITE_AUTH_LOGIN_PATH as string | undefined) || '/auth/login'
+
+if (!API_BASE_URL) {
+  // eslint-disable-next-line no-console
+  console.warn('[HTTP] VITE_SERVER_URL is not defined. Please set it in .env')
+}
+
+// eslint-disable-next-line no-console
+console.debug('[HTTP] baseURL:', API_BASE_URL, 'refreshPath:', REFRESH_PATH, 'loginPath:', LOGIN_PATH)
 
 type AuthTokens = {
-  access_token: string
-  refresh_token: string
+  accessToken: string
+  refreshToken: string
   user_profile?: unknown
 }
 
@@ -17,29 +29,29 @@ type ApiEnvelope<T> = {
 type AuthResponse = ApiEnvelope<AuthTokens>
 
 type RefreshTokenResponse = ApiEnvelope<{
-  access_token: string
-  refresh_token: string
+  accessToken: string
+  refreshToken: string
 }>
 
 function getAccessTokenFromLS(): string {
-  return localStorage.getItem(ACCESS_TOKEN_KEY) || ''
+  return localStorage.getItem(accessToken_KEY) || ''
 }
 
 function getRefreshTokenFromLS(): string {
-  return localStorage.getItem(REFRESH_TOKEN_KEY) || ''
+  return localStorage.getItem(refreshToken_KEY) || ''
 }
 
 function setAccessTokenToLS(token: string): void {
-  localStorage.setItem(ACCESS_TOKEN_KEY, token)
+  localStorage.setItem(accessToken_KEY, token)
 }
 
 function setRefreshTokenToLS(token: string): void {
-  localStorage.setItem(REFRESH_TOKEN_KEY, token)
+  localStorage.setItem(refreshToken_KEY, token)
 }
 
 function clearLS(): void {
-  localStorage.removeItem(ACCESS_TOKEN_KEY)
-  localStorage.removeItem(REFRESH_TOKEN_KEY)
+  localStorage.removeItem(accessToken_KEY)
+  localStorage.removeItem(refreshToken_KEY)
 }
 
 class Http {
@@ -54,6 +66,7 @@ class Http {
     this.callRefreshToken = null
 
     this.instance = axios.create({
+//       baseURL: API_BASE_URL,
       baseURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8000',
       timeout: 20000,
       headers: { 'Content-Type': 'application/json' }
@@ -92,7 +105,7 @@ class Http {
         if (status === HttpStatusCode.Unauthorized) {
           const originalConfig = error.response?.config || { headers: {}, url: '' }
 
-          if (originalConfig && originalConfig.url !== '/auth/refresh-token' && this.refreshToken) {
+          if (originalConfig && originalConfig.url !== REFRESH_PATH && this.refreshToken) {
             this.callRefreshToken = this.callRefreshToken
               ? this.callRefreshToken
               : this.handleRefreshToken().finally(() => {
@@ -112,6 +125,9 @@ class Http {
           clearLS()
           this.accessToken = ''
           this.refreshToken = ''
+          
+          // Trigger logout event for AuthContext
+          window.dispatchEvent(new CustomEvent('auth:logout'))
         }
 
         return Promise.reject(error)
@@ -123,10 +139,10 @@ class Http {
     const url = response.config?.url || ''
     const data = response.data
 
-    if (url === '/auth/login' || url === '/auth/verify-email') {
+    if (url === LOGIN_PATH || url === '/auth/verify-email') {
       const result = data?.result
-      const access = result?.access_token as string | undefined
-      const refresh = result?.refresh_token as string | undefined
+      const access = result?.accessToken as string | undefined
+      const refresh = result?.refreshToken as string | undefined
 
       if (access) {
         this.accessToken = access
@@ -145,11 +161,11 @@ class Http {
 
   private handleRefreshToken(): Promise<string> {
     return this.instance
-      .post<RefreshTokenResponse>('/auth/refresh-token', { refresh_token: this.refreshToken })
+      .post<RefreshTokenResponse>(REFRESH_PATH, { refreshToken: this.refreshToken })
       .then((res) => {
         const result = res.data?.result
-        const accessToken = result?.access_token as string
-        const refreshToken = result?.refresh_token as string
+        const accessToken = result?.accessToken as string
+        const refreshToken = result?.refreshToken as string
 
         if (accessToken) {
           this.accessToken = accessToken
@@ -166,6 +182,9 @@ class Http {
         clearLS()
         this.accessToken = ''
         this.refreshToken = ''
+        
+        // Trigger logout event for AuthContext
+        window.dispatchEvent(new CustomEvent('auth:logout'))
         throw err
       })
   }
@@ -174,3 +193,35 @@ class Http {
 const http = new Http().instance
 
 export default http
+
+export function decodeToken(token?: string | null) {
+  if (!token) return null;
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2) return null;
+    let payloadB64 = parts[1];
+
+    // Fix padding nếu thiếu
+    const pad = payloadB64.length % 4;
+    if (pad) payloadB64 += "=".repeat(4 - pad);
+
+    const binary = atob(payloadB64);
+    const json = decodeURIComponent(
+      Array.prototype.map.call(binary, (c: string) =>
+        "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join("")
+    );
+
+    return JSON.parse(json);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    // fallback minimal
+    try {
+      const payload = token.split(".")[1];
+      return JSON.parse(atob(payload));
+    } catch (err) {
+      console.warn("decodeToken failed", err);
+      return null;
+    }
+  }
+}
