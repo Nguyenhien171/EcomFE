@@ -154,7 +154,7 @@ export default function Products() {
     setCurrentPage(1)
   }
 
-  const itemsPerPage = 10
+  const itemsPerPage = 5
 
   // tổng trang
   const totalPages = Math.ceil(filtered.length / itemsPerPage)
@@ -252,7 +252,7 @@ export default function Products() {
         </button>
       </div>
       {/* Table */}
-      <div className='overflow-x-auto bg-white border rounded'>
+      <div className='overflow-x-auto bg-white border rounded-2xl'>
         <table className='min-w-full table-auto text-sm'>
           <thead>
             <tr className='bg-blue-50 text-left text-xs text-blue-600'>
