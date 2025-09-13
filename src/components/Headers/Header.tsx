@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { FaSearch, FaRegCommentDots, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
+import ReactDOM from 'react-dom/client'
+import { FaSearch, FaRegCommentDots, FaUserCircle, FaSignOutAlt, FaCoins } from 'react-icons/fa'
 import { IoMdNotificationsOutline } from 'react-icons/io'
 import { BiLogoMagento } from 'react-icons/bi'
 import { FiFlag } from 'react-icons/fi'
@@ -8,6 +9,7 @@ import { IoSunnyOutline } from 'react-icons/io5'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import path from '../../constants/path'
+import GoldPricePopup from '../GoldPricePopup/GoldPricePopup'
 
 export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -17,6 +19,36 @@ export default function Header() {
   const handleLogout = () => {
     logout()
     navigate(path.login)
+  }
+
+  const handleGoldPriceClick = () => {
+    const width = window.screen.width
+    const height = window.screen.height
+    const popupWindow = window.open(
+      '',
+      'goldPriceWindow',
+      `width=${width},height=${height},left=0,top=0`
+    )
+
+    if (popupWindow) {
+      // Set up the basic HTML structure
+      popupWindow.document.body.innerHTML = '<div id="root"></div>'
+      popupWindow.document.body.className = 'bg-gray-100 p-4 grid place-items-center'
+      popupWindow.document.title = 'Giá vàng SJC'
+
+      // Add Tailwind CSS
+      const tailwindScript = popupWindow.document.createElement('script')
+      tailwindScript.src = 'https://cdn.tailwindcss.com'
+      popupWindow.document.head.appendChild(tailwindScript)
+
+      // Render the React component into the popup
+      const root = ReactDOM.createRoot(popupWindow.document.getElementById('root')!)
+      root.render(
+        <React.StrictMode>
+          <GoldPricePopup />
+        </React.StrictMode>
+      )
+    }
   }
 
   // Close user menu when clicking outside
@@ -58,6 +90,14 @@ export default function Header() {
 
       {/* Right: Icons */}
       <div className='flex items-center gap-8'>
+        <button
+          onClick={handleGoldPriceClick}
+          className='flex items-center gap-2 rounded-xl bg-yellow-400 px-3 py-2 text-sm font-medium text-yellow-900 hover:bg-yellow-500'
+        >
+          <FaCoins />
+          Giá vàng
+        </button>
+
         <IoSunnyOutline className='cursor-pointer text-3xl' />
         <FiFlag className='text-2xl cursor-pointer' />
         {/* Thay flag Mỹ bằng icon flag sử dụng 1 hash code để gán ảnh cờ vào */}
@@ -77,7 +117,7 @@ export default function Header() {
             <FaUserCircle className='text-3xl text-gray-500' />
             <span className='absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full border-2 border-white'></span>
           </button>
-          
+
           {showUserMenu && (
             <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border'>
               <div className='px-4 py-2 text-sm text-gray-700 border-b'>
