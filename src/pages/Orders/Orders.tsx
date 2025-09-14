@@ -405,7 +405,7 @@ function CreateOrderForm({ onCreated }: { onCreated: (order: Order) => void }) {
     if (customerPhone.trim()) {
       try {
         const res = await apiGetCustomerByPhone(customerPhone.trim())
-        customer_id = String(res.customer.id)
+        customer_id = String(res.customer.phone)
         // nếu chưa nhập tên thì dùng tên từ backend
         if (!customer_name_final) customer_name_final = res.customer.name
       } catch (e) {
