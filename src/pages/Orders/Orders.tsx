@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from 'react'
+import toast from 'react-toastify'
 
 // ================================
 // Type definitions matching the backend API
@@ -434,6 +435,7 @@ function CreateOrderForm({ onCreated }: { onCreated: (order: Order) => void }) {
       setCustomerName('')
       setCustomerPhone('')
       setVoucher('')
+      toast('Created order successfully')
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       alert(`Tạo đơn thất bại: ${msg}`)
