@@ -18,6 +18,7 @@ import Users from '../pages/User'
 import Transaction from '../pages/Transactions'
 import Settings from '../pages/Settings'
 import Profile from '../pages/Profile'
+import { ToastContainer } from 'react-toastify'
 
 const router = createBrowserRouter([
   {
@@ -154,6 +155,7 @@ function App() {
   return (
     <AuthProvider>
       <RouterProvider router={router} />
+      <ToastContainer />
     </AuthProvider>
   )
 }
