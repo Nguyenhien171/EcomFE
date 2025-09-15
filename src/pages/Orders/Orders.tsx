@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from 'react'
-import toast from 'react-toastify'
+import { toast } from 'react-toastify'
 
 // ================================
 // Type definitions matching the backend API
