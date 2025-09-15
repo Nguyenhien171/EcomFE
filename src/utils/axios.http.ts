@@ -79,8 +79,9 @@ class Http {
   private initializeRequestInterceptor() {
     this.instance.interceptors.request.use(
       (config) => {
-        if (this.accessToken && config.headers) {
-          config.headers.Authorization = `Bearer ${this.accessToken}`
+        const accessToken = getAccessTokenFromLS()
+        if (accessToken && config.headers) {
+          config.headers.Authorization = `Bearer ${accessToken}`
         }
         return config
       },
@@ -105,7 +106,7 @@ class Http {
         if (status === HttpStatusCode.Unauthorized) {
           const originalConfig = error.response?.config || { headers: {}, url: '' }
 
-          if (originalConfig && originalConfig.url !== REFRESH_PATH && this.refreshToken) {
+          if (originalConfig && originalConfig.url !== REFRESH_PATH && getRefreshTokenFromLS()) {
             this.callRefreshToken = this.callRefreshToken
               ? this.callRefreshToken
               : this.handleRefreshToken().finally(() => {
@@ -161,7 +162,7 @@ class Http {
 
   private handleRefreshToken(): Promise<string> {
     return this.instance
-      .post<RefreshTokenResponse>(REFRESH_PATH, { refreshToken: this.refreshToken })
+      .post<RefreshTokenResponse>(REFRESH_PATH, { refreshToken: getRefreshTokenFromLS() })
       .then((res) => {
         const result = res.data?.result
         const accessToken = result?.accessToken as string
