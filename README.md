@@ -1,69 +1,117 @@
-# React + TypeScript + Vite
+# E-commerce Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Quick Start
 
-Currently, two official plugins are available:
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Installation
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Environment Setup
+Create a `.env` file in the root directory:
+```env
+VITE_SERVER_URL=http://localhost:3000/api
 ```
+
+## 🔐 Authentication System
+
+### Test Users
+The application includes mock authentication for testing:
+
+| Email | Password | Role | Permissions |
+|-------|----------|------|-------------|
+| admin@example.com | password123 | ADMIN | Full access |
+| manager@example.com | password123 | MANAGER | Create STAFF, manage products |
+| staff@example.com | password123 | STAFF | View only |
+
+### Features
+- **Role-based Access Control**: ADMIN > MANAGER > STAFF
+- **Protected Routes**: Automatic redirect based on permissions
+- **Token Management**: JWT with auto-refresh
+- **Persistent Login**: Remember user session
+
+## 🏗️ Architecture
+
+### Components
+- `AuthContext`: Global authentication state
+- `ProtectedRoute`: Route protection with role checking
+- `PublicRoute`: Redirect authenticated users
+- `CreateUser`: Role-based user creation form
+
+### Pages
+- `/login` - Authentication (public)
+- `/dashboard` - Admin/Manager only
+- `/products` - All roles (create/edit for Manager+)
+- `/users` - Admin/Manager only
+- `/settings` - Admin only
+
+## 🛠️ Development
+
+### Available Scripts
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint errors
+npm run prettier     # Check Prettier formatting
+npm run prettier:fix # Fix Prettier formatting
+```
+
+### Tech Stack
+- **React 19** with TypeScript
+- **Vite** for build tooling
+- **React Router** for routing
+- **React Hook Form** with Zod validation
+- **Tailwind CSS** for styling
+- **Axios** for HTTP requests
+
+## 📁 Project Structure
+```
+src/
+├── contexts/          # Global state management
+├── components/        # Reusable components
+├── pages/            # Page components
+├── schemas/          # Zod validation schemas
+├── utils/            # Utilities and helpers
+└── constants/        # App constants
+```
+
+## 🔧 Configuration
+
+### TypeScript
+- Strict mode enabled
+- Path aliases configured
+- ESLint integration
+
+### Styling
+- Tailwind CSS with PostCSS
+- Custom color scheme
+- Responsive design
+
+## 🚨 Troubleshooting
+
+### Common Issues
+1. **Port already in use**: Change port in `vite.config.ts`
+2. **TypeScript errors**: Run `npm run lint:fix`
+3. **Styling issues**: Check Tailwind classes
+
+### Mock Authentication
+The app uses mock authentication for development. To integrate with real backend:
+1. Update `VITE_SERVER_URL` in `.env`
+2. Replace mock functions in `utils/mockAuth.ts`
+3. Update axios interceptor in `utils/axios.http.ts`
+
+## 📝 Notes
+- All authentication is currently mocked
+- Role hierarchy: STAFF < MANAGER < ADMIN
+- Auto-logout on token expiry
+- Persistent user data in localStorage

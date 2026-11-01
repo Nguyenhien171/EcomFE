@@ -53,3 +53,5 @@ export const loginSchema = z.object({
   staySignedIn: z.boolean().optional(),
 });
 
+export type LoginFormData = z.infer<typeof loginSchema>
+export type RegisterFormData = z.infer<typeof registerSchema>

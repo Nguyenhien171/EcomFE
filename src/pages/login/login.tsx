@@ -1,14 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "../../schemas/authSchema";
 import path from "../../constants/path";
+import { useAuth } from "../../contexts/AuthContext";
+import http from "../../utils/axios.http";
+
+
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
 
   const {
     register,
@@ -33,17 +44,54 @@ const Login: React.FC = () => {
     }
   }, [setValue]);
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Login success:", data);
+  const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
+    setError("");
 
-    if (data.staySignedIn) {
-      localStorage.setItem("savedEmail", data.email);
-    } else {
-      localStorage.removeItem("savedEmail");
-      sessionStorage.setItem("tempEmail", data.email);
+    try {
+      // Call backend login API
+      const response = await http.post( "/v1/auth/login", {
+        email: data.email,
+        password: data.password
+      });
+      console.log(response)
+      console.log("Login response:", response.data);
+
+      // Handle different response shapes from BE
+      // const raw = response?.data ?? {};
+      // const result = (raw as any).result ?? raw;
+      const tokens = (response as any).data ?? {};
+      const accessToken = (tokens as any).accessToken as string | undefined;
+      const refreshToken = (tokens as any).refreshToken as string | undefined;
+      // const user_profile = (result as any).user_profile ?? (result as any).user ?? (result as any).profile ?? null;
+
+      if (!accessToken) {
+        throw new Error('Không nhận được accessToken từ server');
+      }
+
+      // Store user data and tokens in context/localStorage
+      login(accessToken, refreshToken || '', {} as any);
+
+      // Save email if "Stay signed in" is checked
+      if (data.staySignedIn) {
+        localStorage.setItem("savedEmail", data.email);
+      } else {
+        localStorage.removeItem("savedEmail");
+        sessionStorage.setItem("tempEmail", data.email);
+      }
+
+      // Redirect to intended page or dashboard
+      // const from = (location.state as any)?.from?.pathname || path.dashboard;
+      navigate("/products", { replace: true });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      const msg = error?.response?.data?.message
+        || error?.message
+        || "Đăng nhập thất bại. Vui lòng thử lại.";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
     }
-
-    alert("Đăng nhập thành công !");
   };
 
   return (
@@ -110,11 +158,19 @@ const Login: React.FC = () => {
             </div>
           </div>
 
+          {error && (
+            <div className="text-red-500 text-sm text-center mb-2">{error}</div>
+          )}
           <button
             type="submit"
-            className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 mt-2"
+            disabled={isLoading}
+            className={`w-full py-2 rounded-lg mt-2 ${
+              isLoading 
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed" 
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
           >
-            Login
+            {isLoading ? "Đang đăng nhập..." : "Login"}
           </button>
         </form>
       </div>
